@@ -3,24 +3,20 @@ package app.sdkgen.client;
 
 import app.sdkgen.client.Credentials.*;
 import app.sdkgen.client.Exception.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.*;
+import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -32,13 +28,19 @@ public abstract class ClientAbstract {
     protected String baseUrl;
     protected CredentialsInterface credentials;
     protected TokenStoreInterface tokenStore;
+    protected List<String> scopes;
     protected ObjectMapper objectMapper;
 
-    public ClientAbstract(String baseUrl, CredentialsInterface credentials, TokenStoreInterface tokenStore) {
+    public ClientAbstract(String baseUrl, CredentialsInterface credentials, TokenStoreInterface tokenStore, List<String> scopes) {
         this.baseUrl = baseUrl;
         this.credentials = credentials;
         this.tokenStore = tokenStore;
+        this.scopes = scopes;
         this.objectMapper = new ObjectMapper();
+    }
+
+    public ClientAbstract(String baseUrl, CredentialsInterface credentials, TokenStoreInterface tokenStore) {
+        this(baseUrl, credentials, tokenStore, new ArrayList<>());
     }
 
     public String buildRedirectUrl(String redirectUrl, List<String> scopes, String state) throws InvalidCredentialsException, URISyntaxException {
@@ -106,7 +108,7 @@ public abstract class ClientAbstract {
         return this.parseTokenResponse(this.newHttpClient(credentials).execute(request));
     }
 
-    protected AccessToken fetchAccessTokenByRefresh(String refreshToken) throws InvalidCredentialsException, TokenReadException, FoundNoAccessTokenException, IOException, InvalidAccessTokenException, TokenPersistException {
+    protected AccessToken fetchAccessTokenByRefresh(String refreshToken) throws InvalidCredentialsException, FoundNoAccessTokenException, IOException, InvalidAccessTokenException, TokenPersistException {
         if (!(this.credentials instanceof OAuth2Abstract)) {
             throw new InvalidCredentialsException("The configured credentials do not support the OAuth2 flow");
         }
@@ -126,7 +128,7 @@ public abstract class ClientAbstract {
         return this.parseTokenResponse(this.newHttpClient(credentials).execute(request));
     }
 
-    protected String getAccessToken(boolean automaticRefresh, int expireThreshold) throws FoundNoAccessTokenException, TokenReadException {
+    protected String getAccessToken(boolean automaticRefresh, int expireThreshold) throws FoundNoAccessTokenException, InvalidAccessTokenException, TokenPersistException, InvalidCredentialsException, IOException {
         if (this.tokenStore == null) {
             throw new FoundNoAccessTokenException("No token store was configured");
         }
@@ -141,14 +143,13 @@ public abstract class ClientAbstract {
         }
 
         if (automaticRefresh && token.getRefreshToken() != null && !token.getRefreshToken().isEmpty()) {
-            // @TODO refresh
-            return null;
-        } else {
-            return token.getAccessToken();
+            return this.fetchAccessTokenByRefresh(token.getRefreshToken()).getAccessToken();
         }
+
+        return token.getAccessToken();
     }
 
-    protected String getAccessToken() throws FoundNoAccessTokenException, TokenReadException {
+    protected String getAccessToken() throws FoundNoAccessTokenException, InvalidAccessTokenException, TokenPersistException, InvalidCredentialsException, IOException {
         return this.getAccessToken(true, EXPIRE_THRESHOLD);
     }
 
@@ -158,7 +159,7 @@ public abstract class ClientAbstract {
 
         if (credentials instanceof HttpBasic) {
             final HttpBasic cred = (HttpBasic) credentials;
-            builder.addInterceptorFirst((HttpRequestInterceptor) (httpRequest, httpContext) -> httpRequest.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((cred.getUserName() + ":" + cred.getPasssword()).getBytes())));
+            builder.addInterceptorFirst((HttpRequestInterceptor) (httpRequest, httpContext) -> httpRequest.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((cred.getUserName() + ":" + cred.getPassword()).getBytes())));
         } else if (credentials instanceof HttpBearer) {
             final HttpBearer cred = (HttpBearer) credentials;
             builder.addInterceptorFirst((HttpRequestInterceptor) (httpRequest, httpContext) -> httpRequest.addHeader("Authorization", "Bearer " + cred.getToken()));
@@ -169,7 +170,7 @@ public abstract class ClientAbstract {
             builder.addInterceptorFirst((HttpRequestInterceptor) (httpRequest, httpContext) -> {
                 try {
                     httpRequest.addHeader("Authorization", "Bearer " + this.getAccessToken());
-                } catch (FoundNoAccessTokenException | TokenReadException e) {
+                } catch (FoundNoAccessTokenException | InvalidAccessTokenException | TokenPersistException | InvalidCredentialsException e) {
                     // @TODO there is not much we can do here
                 }
             });

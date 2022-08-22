@@ -2,7 +2,6 @@ package app.sdkgen.client.TokenStore;
 
 import app.sdkgen.client.AccessToken;
 import app.sdkgen.client.Exception.TokenPersistException;
-import app.sdkgen.client.Exception.TokenReadException;
 import app.sdkgen.client.TokenStoreInterface;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -10,7 +9,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.List;
 
 public class FileTokenStore implements TokenStoreInterface {
     private final String cacheDir;
@@ -26,19 +24,20 @@ public class FileTokenStore implements TokenStoreInterface {
     }
 
     @Override
-    public AccessToken get() throws TokenReadException {
+    public AccessToken get() {
         try {
-            List<String> lines = Files.readAllLines(this.getFileName().toPath());
-
-            StringBuilder builder = new StringBuilder();
-            for (String line : lines) {
-                builder.append(line);
-                builder.append("\n");
+            if (!this.getFileName().isFile()) {
+                return null;
             }
 
-            return (new ObjectMapper()).readValue(builder.toString(), AccessToken.class);
+            String json = Files.readString(this.getFileName().toPath());
+            if (json == null || json.isEmpty()) {
+                return null;
+            }
+
+            return (new ObjectMapper()).readValue(json, AccessToken.class);
         } catch (IOException e) {
-            throw new TokenReadException("Could not read token from file", e);
+            return null;
         }
     }
 
@@ -52,6 +51,16 @@ public class FileTokenStore implements TokenStoreInterface {
             file.close();
         } catch (IOException e) {
             throw new TokenPersistException("Could not persist token", e);
+        }
+    }
+
+    @Override
+    public void remove() {
+        try {
+            FileWriter file = new FileWriter(this.getFileName());
+            file.write("");
+            file.close();
+        } catch (IOException e) {
         }
     }
 

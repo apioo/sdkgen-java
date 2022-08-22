@@ -4,18 +4,18 @@ import app.sdkgen.client.CredentialsInterface;
 
 public class HttpBasic implements CredentialsInterface {
     private final String userName;
-    private final String passsword;
+    private final String password;
 
-    public HttpBasic(String userName, String passsword) {
+    public HttpBasic(String userName, String password) {
         this.userName = userName;
-        this.passsword = passsword;
+        this.password = password;
     }
 
     public String getUserName() {
         return userName;
     }
 
-    public String getPasssword() {
-        return passsword;
+    public String getPassword() {
+        return password;
     }
 }

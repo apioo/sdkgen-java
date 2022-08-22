@@ -15,4 +15,9 @@ public class MemoryTokenStore implements TokenStoreInterface {
     public void persist(AccessToken token) {
         this.token = token;
     }
+
+    @Override
+    public void remove() {
+        this.token = null;
+    }
 }
