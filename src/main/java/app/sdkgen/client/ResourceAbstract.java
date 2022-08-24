@@ -17,6 +17,6 @@ public abstract class ResourceAbstract {
     }
 
     protected <T> T parse(String data, Class<T> type) throws JsonProcessingException {
-        return (new ObjectMapper()).readValue(data, type);
+        return this.objectMapper.readValue(data, type);
     }
 }
