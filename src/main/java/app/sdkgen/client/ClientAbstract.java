@@ -129,24 +129,26 @@ public abstract class ClientAbstract {
     }
 
     protected String getAccessToken(boolean automaticRefresh, int expireThreshold) throws FoundNoAccessTokenException, InvalidAccessTokenException, TokenPersistException, InvalidCredentialsException, IOException {
-        if (this.tokenStore == null) {
-            throw new FoundNoAccessTokenException("No token store was configured");
+        long timestamp = System.currentTimeMillis() / 1000;
+
+        AccessToken accessToken = this.tokenStore.get();
+        if ((accessToken == null || accessToken.getExpiresIn() < timestamp) && this.credentials instanceof ClientCredentials) {
+            accessToken = this.fetchAccessTokenByClientCredentials();
         }
 
-        AccessToken token = this.tokenStore.get();
-        if (token == null) {
-            throw new FoundNoAccessTokenException("Found no access token, please obtain an access token before making an request");
+        if (accessToken == null) {
+            throw new FoundNoAccessTokenException("Found no access token, please obtain an access token before making a request");
         }
 
-        if (token.getExpiresIn() > (System.currentTimeMillis() / 1000) + expireThreshold) {
-            return token.getAccessToken();
+        if (accessToken.getExpiresIn() > (timestamp + expireThreshold)) {
+            return accessToken.getAccessToken();
         }
 
-        if (automaticRefresh && token.getRefreshToken() != null && !token.getRefreshToken().isEmpty()) {
-            return this.fetchAccessTokenByRefresh(token.getRefreshToken()).getAccessToken();
+        if (automaticRefresh && accessToken.getRefreshToken() != null && !accessToken.getRefreshToken().isEmpty()) {
+            accessToken = this.fetchAccessTokenByRefresh(accessToken.getRefreshToken());
         }
 
-        return token.getAccessToken();
+        return accessToken.getAccessToken();
     }
 
     protected String getAccessToken() throws FoundNoAccessTokenException, InvalidAccessTokenException, TokenPersistException, InvalidCredentialsException, IOException {
