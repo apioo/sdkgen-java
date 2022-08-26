@@ -11,5 +11,5 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-      - name: Publish package
+      - name: Compile
         run: mvn compile
