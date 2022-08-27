@@ -13,3 +13,5 @@ jobs:
           distribution: 'adopt'
       - name: Compile
         run: mvn compile
+      - name: Test
+        run: mvn test

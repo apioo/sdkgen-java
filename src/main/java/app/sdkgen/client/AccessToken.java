@@ -1,5 +1,6 @@
 package app.sdkgen.client;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AccessToken {
@@ -8,21 +9,13 @@ public class AccessToken {
     private final int expiresIn;
     private final String refreshToken;
     private final String scope;
-
+    @JsonCreator
     public AccessToken(@JsonProperty("access_token") String accessToken, @JsonProperty("token_type") String tokenType, @JsonProperty("expires_in") int expiresIn, @JsonProperty("refresh_token") String refreshToken, @JsonProperty("scope") String scope) {
         this.accessToken = accessToken;
         this.tokenType = tokenType;
         this.expiresIn = expiresIn;
         this.refreshToken = refreshToken;
         this.scope = scope;
-    }
-
-    public AccessToken(@JsonProperty("access_token") String accessToken, @JsonProperty("token_type") String tokenType, @JsonProperty("expires_in") int expiresIn, @JsonProperty("refresh_token") String refreshToken) {
-        this(accessToken, tokenType, expiresIn, refreshToken, null);
-    }
-
-    public AccessToken(@JsonProperty("access_token") String accessToken, @JsonProperty("token_type") String tokenType, @JsonProperty("expires_in") int expiresIn) {
-        this(accessToken, tokenType, expiresIn, null, null);
     }
 
     public String getAccessToken() {
