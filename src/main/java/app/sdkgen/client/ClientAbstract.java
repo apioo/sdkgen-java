@@ -20,6 +20,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class ClientAbstract {
     private static final String USER_AGENT = "SDKgen Client v0.1";
@@ -144,7 +146,7 @@ public abstract class ClientAbstract {
             return accessToken.getAccessToken();
         }
 
-        if (automaticRefresh && accessToken.getRefreshToken() != null && !accessToken.getRefreshToken().isEmpty()) {
+        if (automaticRefresh && accessToken.hasRefreshToken()) {
             accessToken = this.fetchAccessTokenByRefresh(accessToken.getRefreshToken());
         }
 
@@ -173,7 +175,7 @@ public abstract class ClientAbstract {
                 try {
                     httpRequest.addHeader("Authorization", "Bearer " + this.getAccessToken());
                 } catch (FoundNoAccessTokenException | InvalidAccessTokenException | TokenPersistException | InvalidCredentialsException e) {
-                    // @TODO there is not much we can do here
+                    Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Could not obtain access token", e);
                 }
             });
         }
