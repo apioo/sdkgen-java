@@ -26,19 +26,22 @@ import java.util.logging.Logger;
 public abstract class ClientAbstract {
     private static final String USER_AGENT = "SDKgen Client v0.1";
     private static final int EXPIRE_THRESHOLD = 60 * 10;
-
     protected String baseUrl;
     protected CredentialsInterface credentials;
     protected TokenStoreInterface tokenStore;
     protected List<String> scopes;
     protected ObjectMapper objectMapper;
 
-    public ClientAbstract(String baseUrl, CredentialsInterface credentials, TokenStoreInterface tokenStore, List<String> scopes) {
+    public ClientAbstract(String baseUrl, CredentialsInterface credentials, TokenStoreInterface tokenStore, List<String> scopes, ObjectMapper objectMapper) {
         this.baseUrl = baseUrl;
         this.credentials = credentials;
         this.tokenStore = tokenStore;
         this.scopes = scopes;
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = objectMapper;
+    }
+
+    public ClientAbstract(String baseUrl, CredentialsInterface credentials, TokenStoreInterface tokenStore, List<String> scopes) {
+        this(baseUrl, credentials, tokenStore, scopes, (new ObjectMapper()).findAndRegisterModules());
     }
 
     public ClientAbstract(String baseUrl, CredentialsInterface credentials, TokenStoreInterface tokenStore) {
