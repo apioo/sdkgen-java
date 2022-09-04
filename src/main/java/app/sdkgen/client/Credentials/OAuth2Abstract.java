@@ -7,14 +7,12 @@ public abstract class OAuth2Abstract implements CredentialsInterface {
     private final String clientSecret;
     private final String tokenUrl;
     private final String authorizationUrl;
-    private final String refreshUrl;
 
-    public OAuth2Abstract(String clientId, String clientSecret, String tokenUrl, String authorizationUrl, String refreshUrl) {
+    public OAuth2Abstract(String clientId, String clientSecret, String tokenUrl, String authorizationUrl) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.tokenUrl = tokenUrl;
         this.authorizationUrl = authorizationUrl;
-        this.refreshUrl = refreshUrl;
     }
 
     public String getClientId() {
@@ -31,9 +29,5 @@ public abstract class OAuth2Abstract implements CredentialsInterface {
 
     public String getAuthorizationUrl() {
         return authorizationUrl;
-    }
-
-    public String getRefreshUrl() {
-        return refreshUrl;
     }
 }
