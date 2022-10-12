@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>app.sdkgen</groupId>
   <artifactId>client</artifactId>
-  <version>0.2.5</version>
+  <version>0.2.6</version>
   <packaging>jar</packaging>
   <name>SDKgen client</name>
   <description>The SDKgen client library to work with the automatically generated SDK</description>
@@ -96,12 +96,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <gpgArguments>
-            <arg>--pinentry-mode</arg>
-            <arg>loopback</arg>
-          </gpgArguments>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
