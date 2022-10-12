@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>app.sdkgen</groupId>
   <artifactId>client</artifactId>
-  <version>0.2.7</version>
+  <version>0.2.8</version>
   <packaging>jar</packaging>
   <name>SDKgen client</name>
   <description>The SDKgen client library to work with the automatically generated SDK</description>
@@ -88,6 +88,15 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
         <version>3.0.1</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
