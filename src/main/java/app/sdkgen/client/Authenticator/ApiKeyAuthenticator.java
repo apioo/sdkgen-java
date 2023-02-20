@@ -1,17 +1,18 @@
 package app.sdkgen.client.Authenticator;
 
 import app.sdkgen.client.AuthenticatorInterface;
+import app.sdkgen.client.Credentials.ApiKey;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
 
-public class ApiKey implements AuthenticatorInterface {
+public class ApiKeyAuthenticator implements AuthenticatorInterface {
 
-    private app.sdkgen.client.Credentials.ApiKey credentials;
+    private ApiKey credentials;
 
-    public ApiKey(app.sdkgen.client.Credentials.ApiKey credentials) {
+    public ApiKeyAuthenticator(ApiKey credentials) {
         this.credentials = credentials;
     }
 

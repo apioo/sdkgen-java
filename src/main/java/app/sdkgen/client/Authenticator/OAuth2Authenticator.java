@@ -26,14 +26,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class OAuth2 implements AuthenticatorInterface {
+public class OAuth2Authenticator implements AuthenticatorInterface {
     private static final int EXPIRE_THRESHOLD = 60 * 10;
 
     private final OAuth2Abstract credentials;
     private final TokenStoreInterface tokenStore;
     private final List<String> scopes;
 
-    public OAuth2(OAuth2Abstract credentials) {
+    public OAuth2Authenticator(OAuth2Abstract credentials) {
         this.credentials = credentials;
         this.tokenStore = credentials.getTokenStore();
         this.scopes = credentials.getScopes();
