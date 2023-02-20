@@ -1,7 +1,7 @@
 package app.sdkgen.client.TokenStore;
 
 import app.sdkgen.client.AccessToken;
-import app.sdkgen.client.Exception.TokenPersistException;
+import app.sdkgen.client.Exception.Authenticator.TokenPersistException;
 import app.sdkgen.client.TokenStoreInterface;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -1,7 +1,7 @@
 
 package app.sdkgen.client;
 
-import app.sdkgen.client.Exception.TokenPersistException;
+import app.sdkgen.client.Exception.Authenticator.TokenPersistException;
 
 public interface TokenStoreInterface {
     AccessToken get();
