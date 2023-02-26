@@ -1,10 +1,9 @@
 package app.sdkgen.client.Authenticator;
 
 import app.sdkgen.client.*;
-import app.sdkgen.client.Credentials.ClientCredentials;
 import app.sdkgen.client.Credentials.HttpBasic;
 import app.sdkgen.client.Credentials.HttpBearer;
-import app.sdkgen.client.Credentials.OAuth2Abstract;
+import app.sdkgen.client.Credentials.OAuth2;
 import app.sdkgen.client.Exception.Authenticator.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpException;
@@ -29,11 +28,11 @@ import java.util.logging.Logger;
 public class OAuth2Authenticator implements AuthenticatorInterface {
     private static final int EXPIRE_THRESHOLD = 60 * 10;
 
-    private final OAuth2Abstract credentials;
+    private final OAuth2 credentials;
     private final TokenStoreInterface tokenStore;
     private final List<String> scopes;
 
-    public OAuth2Authenticator(OAuth2Abstract credentials) {
+    public OAuth2Authenticator(OAuth2 credentials) {
         this.credentials = credentials;
         this.tokenStore = credentials.getTokenStore();
         this.scopes = credentials.getScopes();
@@ -132,7 +131,7 @@ public class OAuth2Authenticator implements AuthenticatorInterface {
         long timestamp = System.currentTimeMillis() / 1000;
 
         AccessToken accessToken = this.tokenStore.get();
-        if ((accessToken == null || accessToken.getExpiresIn() < timestamp) && this.credentials instanceof ClientCredentials) {
+        if (accessToken == null || accessToken.getExpiresIn() < timestamp) {
             accessToken = this.fetchAccessTokenByClientCredentials();
         }
 

@@ -13,8 +13,8 @@ public class AuthenticatorFactory {
             return new HttpBearerAuthenticator((HttpBearer) credentials);
         } else if (credentials instanceof ApiKey) {
             return new ApiKeyAuthenticator((ApiKey) credentials);
-        } else if (credentials instanceof OAuth2Abstract) {
-            return new OAuth2Authenticator((OAuth2Abstract) credentials);
+        } else if (credentials instanceof OAuth2) {
+            return new OAuth2Authenticator((OAuth2) credentials);
         } else if (credentials instanceof Anonymous) {
             return new AnonymousAuthenticator((Anonymous) credentials);
         } else {
