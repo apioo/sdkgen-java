@@ -5,29 +5,35 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.utils.URIBuilder;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class Parser {
     private final String baseUrl;
     private final ObjectMapper objectMapper;
-    private final SimpleDateFormat dateFormatter;
-    private final SimpleDateFormat dateTimeFormatter;
-    private final SimpleDateFormat timeFormatter;
+    private final DateTimeFormatter dateFormatter;
+    private final DateTimeFormatter dateTimeFormatter;
+    private final DateTimeFormatter timeFormatter;
 
     public Parser(String baseUrl, ObjectMapper objectMapper) {
-        this.baseUrl = baseUrl;
+        this.baseUrl = this.normalizeBaseUrl(baseUrl);
         this.objectMapper = objectMapper;
-        this.dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-        this.dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        this.timeFormatter = new SimpleDateFormat("HH:mm:ss");
+        this.dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        this.dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        this.timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     }
 
     public String url(String path, Map<String, Object> parameters) {
-        return this.substituteParameters(this.baseUrl + "/" + path, parameters);
+        return this.baseUrl + "/" + this.substituteParameters(path, parameters);
     }
 
     public <T> T parse(String data, Class<T> value) throws ParseException {
@@ -40,25 +46,64 @@ public class Parser {
 
     public void query(URIBuilder builder, Map<String, Object> parameters) {
         parameters.forEach((key, value) -> {
-            if (value instanceof String) {
-                builder.addParameter(key, (String) value);
-            } else if (value instanceof Integer) {
-                builder.addParameter(key, String.valueOf(value));
-            } else if (value instanceof Float) {
-                builder.addParameter(key, String.valueOf(value));
-            } else if (value instanceof Boolean) {
-                builder.addParameter(key, String.valueOf(value));
-            } else if (value instanceof LocalDate) {
-                builder.addParameter(key, this.dateFormatter.format(value));
-            } else if (value instanceof LocalDateTime) {
-                builder.addParameter(key, this.dateTimeFormatter.format(value));
-            } else if (value instanceof LocalTime) {
-                builder.addParameter(key, this.timeFormatter.format(value));
-            }
+            builder.addParameter(key, this.toString(value));
         });
     }
 
-    private String substituteParameters(String url, Map<String, Object> parameters) {
-        return url;
+    private String substituteParameters(String path, Map<String, Object> parameters) {
+        String[] parts = path.split("/");
+        List<String> result = new ArrayList<>();
+
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            if (part == null || part.isBlank()) {
+                continue;
+            }
+
+            String name = null;
+            if (part.startsWith(":")) {
+                name = part.substring(1);
+            } else if (part.startsWith("$")) {
+                int pos = part.indexOf("<");
+                name = part.substring(1, pos);
+            } else if (part.startsWith("{") && part.endsWith("}")) {
+                name = part.substring(1, part.length() - 1);
+            }
+
+            if (name != null && parameters.containsKey(name)) {
+                part = this.toString(parameters.get(name));
+            }
+
+            result.add(part);
+        }
+
+        return String.join("/", result);
+    }
+
+    private String toString(Object value) {
+        if (value instanceof String) {
+            return String.valueOf(value);
+        } else if (value instanceof Float || value instanceof Double) {
+            return String.valueOf(value);
+        } else if (value instanceof Integer) {
+            return String.valueOf(value);
+        } else if (value instanceof Boolean) {
+            return (Boolean) value ? "1" : "0";
+        } else if (value instanceof LocalDate) {
+            return ((LocalDate) value).format(this.dateFormatter);
+        } else if (value instanceof LocalDateTime) {
+            return ((LocalDateTime) value).format(this.dateTimeFormatter);
+        } else if (value instanceof LocalTime) {
+            return ((LocalTime) value).format(this.timeFormatter);
+        } else {
+            return "";
+        }
+    }
+
+    private String normalizeBaseUrl(String baseUrl) {
+        if (baseUrl.endsWith("/")) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+        }
+        return baseUrl;
     }
 }
