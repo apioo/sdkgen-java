@@ -18,9 +18,9 @@ public class Parser {
     private final SimpleDateFormat dateTimeFormatter;
     private final SimpleDateFormat timeFormatter;
 
-    public Parser(String baseUrl) {
+    public Parser(String baseUrl, ObjectMapper objectMapper) {
         this.baseUrl = baseUrl;
-        this.objectMapper = (new ObjectMapper()).findAndRegisterModules();
+        this.objectMapper = objectMapper;
         this.dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
         this.dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         this.timeFormatter = new SimpleDateFormat("HH:mm:ss");
@@ -30,7 +30,7 @@ public class Parser {
         return this.substituteParameters(this.baseUrl + "/" + path, parameters);
     }
 
-    public Object parse(String data, Class<Object> value) throws ParseException {
+    public <T> T parse(String data, Class<T> value) throws ParseException {
         try {
             return this.objectMapper.readValue(data, value);
         } catch (JsonProcessingException e) {
