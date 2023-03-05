@@ -19,9 +19,11 @@ public class ParserTest {
         Assert.assertEquals("https://api.acme.com/foo/bar", parser.url("/foo/bar", new HashMap<>()));
         Assert.assertEquals("https://api.acme.com/foo/foo", parser.url("/foo/:bar", this.newMap("bar", "foo")));
         Assert.assertEquals("https://api.acme.com/foo/foo", parser.url("/foo/$bar<[0-9]+>", this.newMap("bar", "foo")));
+        Assert.assertEquals("https://api.acme.com/foo/foo", parser.url("/foo/$bar", this.newMap("bar", "foo")));
         Assert.assertEquals("https://api.acme.com/foo/foo", parser.url("/foo/{bar}", this.newMap("bar", "foo")));
         Assert.assertEquals("https://api.acme.com/foo/foo/bar", parser.url("/foo/{bar}/bar", this.newMap("bar", "foo")));
         Assert.assertEquals("https://api.acme.com/foo/foo/bar", parser.url("/foo/$bar<[0-9]+>/bar", this.newMap("bar", "foo")));
+        Assert.assertEquals("https://api.acme.com/foo/foo/bar", parser.url("/foo/$bar/bar", this.newMap("bar", "foo")));
         Assert.assertEquals("https://api.acme.com/foo/foo/bar", parser.url("/foo/{bar}/bar", this.newMap("bar", "foo")));
 
         Assert.assertEquals("https://api.acme.com/foo/", parser.url("/foo/{bar}", this.newMap("bar", null)));

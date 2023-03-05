@@ -5,16 +5,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.utils.URIBuilder;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class Parser {
@@ -65,7 +61,7 @@ public class Parser {
                 name = part.substring(1);
             } else if (part.startsWith("$")) {
                 int pos = part.indexOf("<");
-                name = part.substring(1, pos);
+                name = pos != -1 ? part.substring(1, pos) : part.substring(1);
             } else if (part.startsWith("{") && part.endsWith("}")) {
                 name = part.substring(1, part.length() - 1);
             }
