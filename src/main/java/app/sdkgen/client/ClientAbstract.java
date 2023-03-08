@@ -3,6 +3,7 @@ package app.sdkgen.client;
 
 import app.sdkgen.client.Credentials.Anonymous;
 import app.sdkgen.client.Exception.Authenticator.InvalidCredentialsException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.HttpClient;
 
@@ -17,7 +18,9 @@ public abstract class ClientAbstract {
     public ClientAbstract(String baseUrl, CredentialsInterface credentials) throws InvalidCredentialsException {
         this.authenticator = AuthenticatorFactory.factory(credentials);
         this.httpClient = (new HttpClientFactory(this.authenticator)).factory();
-        this.objectMapper = (new ObjectMapper()).findAndRegisterModules();
+        this.objectMapper = (new ObjectMapper())
+            .findAndRegisterModules()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.parser = new Parser(baseUrl, this.objectMapper);
     }
 
