@@ -1,20 +1,25 @@
 package app.sdkgen.client;
 
-import app.sdkgen.client.Exception.Authenticator.InvalidCredentialsException;
 import app.sdkgen.client.Exception.ClientException;
 import app.sdkgen.client.generated.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.net.Socket;
 
 public class IntegrationTest {
     private ObjectMapper objectMapper;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.objectMapper = new ObjectMapper();
+
+        Assume.assumeTrue(portIsOpen());
     }
 
     @Test
@@ -123,5 +128,14 @@ public class IntegrationTest {
         payload.setMapObject(mapObject);
         payload.setObject(objectFoo);
         return payload;
+    }
+
+    private boolean portIsOpen() {
+        try {
+            new Socket("127.0.0.1", 8081).close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 }
