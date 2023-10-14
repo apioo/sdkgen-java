@@ -26,7 +26,7 @@ public class IntegrationTest {
     public void testClientGetAll() throws ClientException {
         Client client = Client.build("my_token");
 
-        TestResponse response = client.getAll(8, 16, "foobar");
+        TestResponse response = client.product().getAll(8, 16, "foobar");
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
@@ -43,7 +43,7 @@ public class IntegrationTest {
         Client client = Client.build("my_token");
 
         TestRequest payload = this.newPayload();
-        TestResponse response = client.create(payload);
+        TestResponse response = client.product().create(payload);
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
@@ -58,7 +58,7 @@ public class IntegrationTest {
         Client client = Client.build("my_token");
 
         TestRequest payload = this.newPayload();
-        TestResponse response = client.update(1, payload);
+        TestResponse response = client.product().update(1, payload);
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
@@ -73,7 +73,7 @@ public class IntegrationTest {
         Client client = Client.build("my_token");
 
         TestRequest payload = this.newPayload();
-        TestResponse response = client.patch(1, payload);
+        TestResponse response = client.product().patch(1, payload);
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
@@ -87,7 +87,7 @@ public class IntegrationTest {
     public void testClientDelete() throws ClientException {
         Client client = Client.build("my_token");
 
-        TestResponse response = client.delete(1);
+        TestResponse response = client.product().delete(1);
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
