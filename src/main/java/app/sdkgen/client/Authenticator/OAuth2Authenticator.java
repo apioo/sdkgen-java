@@ -39,7 +39,7 @@ public class OAuth2Authenticator implements AuthenticatorInterface {
     }
 
     @Override
-    public void process(HttpRequest httpRequest, HttpContext httpContext) throws HttpException, IOException {
+    public void process(HttpRequest httpRequest, HttpContext httpContext) {
         try {
             httpRequest.addHeader("Authorization", "Bearer " + this.getAccessToken());
         } catch (FoundNoAccessTokenException | AccessTokenRequestException | InvalidAccessTokenException | TokenPersistException | InvalidCredentialsException e) {
@@ -56,9 +56,9 @@ public class OAuth2Authenticator implements AuthenticatorInterface {
             builder.addParameter("redirect_uri", redirectUrl);
         }
 
-        if (scopes != null && scopes.size() > 0) {
+        if (scopes != null && !scopes.isEmpty()) {
             builder.addParameter("scope", String.join(",", scopes));
-        } else if (this.scopes != null && this.scopes.size() > 0) {
+        } else if (this.scopes != null && !this.scopes.isEmpty()) {
             builder.addParameter("scope", String.join(",", this.scopes));
         }
 
