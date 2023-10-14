@@ -10,6 +10,7 @@ import app.sdkgen.client.Exception.UnknownStatusCodeException;
 import app.sdkgen.client.Parser;
 import app.sdkgen.client.TagAbstract;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.classic.methods.*;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
