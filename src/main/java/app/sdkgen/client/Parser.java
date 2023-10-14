@@ -42,6 +42,10 @@ public class Parser {
 
     public void query(URIBuilder builder, Map<String, Object> parameters) {
         parameters.forEach((key, value) -> {
+            if (value == null) {
+                return;
+            }
+
             builder.addParameter(key, this.toString(value));
         });
     }
@@ -50,8 +54,7 @@ public class Parser {
         String[] parts = path.split("/");
         List<String> result = new ArrayList<>();
 
-        for (int i = 0; i < parts.length; i++) {
-            String part = parts[i];
+        for (String part : parts) {
             if (part == null || part.isBlank()) {
                 continue;
             }
