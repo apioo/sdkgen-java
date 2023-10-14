@@ -2,20 +2,16 @@ package app.sdkgen.client.Authenticator;
 
 import app.sdkgen.client.AuthenticatorInterface;
 import app.sdkgen.client.Credentials.Anonymous;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.protocol.HttpContext;
-
-import java.io.IOException;
+import org.apache.hc.core5.http.EntityDetails;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.protocol.HttpContext;
 
 public class AnonymousAuthenticator implements AuthenticatorInterface {
-    private Anonymous credentials;
 
     public AnonymousAuthenticator(Anonymous credentials) {
-        this.credentials = credentials;
     }
 
     @Override
-    public void process(HttpRequest httpRequest, HttpContext httpContext) throws HttpException, IOException {
+    public void process(HttpRequest httpRequest, EntityDetails entityDetails, HttpContext httpContext) {
     }
 }

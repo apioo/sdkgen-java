@@ -1,10 +1,14 @@
 package app.sdkgen.client;
 
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.protocol.HttpContext;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.EntityDetails;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.HttpRequestInterceptor;
+import org.apache.hc.core5.http.protocol.HttpContext;
+
+import java.io.IOException;
 
 public class HttpClientFactory {
 
@@ -16,15 +20,15 @@ public class HttpClientFactory {
 
     public CloseableHttpClient factory() {
         HttpClientBuilder builder = HttpClientBuilder.create();
-        builder.addInterceptorFirst(this.authenticator);
-        builder.addInterceptorFirst(new DefaultInterceptor());
+        builder.addRequestInterceptorFirst(this.authenticator);
+        builder.addRequestInterceptorFirst(new DefaultInterceptor());
 
         return builder.build();
     }
 
     private static class DefaultInterceptor implements HttpRequestInterceptor {
         @Override
-        public void process(HttpRequest httpRequest, HttpContext httpContext) {
+        public void process(HttpRequest httpRequest, EntityDetails entityDetails, HttpContext httpContext) throws HttpException, IOException {
             httpRequest.addHeader("User-Agent", ClientAbstract.USER_AGENT);
             httpRequest.addHeader("Accept", "application/json");
         }

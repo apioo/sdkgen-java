@@ -6,17 +6,16 @@ import app.sdkgen.client.Credentials.HttpBearer;
 import app.sdkgen.client.Credentials.OAuth2;
 import app.sdkgen.client.Exception.Authenticator.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.core5.http.EntityDetails;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.net.URIBuilder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -39,7 +38,7 @@ public class OAuth2Authenticator implements AuthenticatorInterface {
     }
 
     @Override
-    public void process(HttpRequest httpRequest, HttpContext httpContext) {
+    public void process(HttpRequest httpRequest, EntityDetails entityDetails, HttpContext httpContext) {
         try {
             httpRequest.addHeader("Authorization", "Bearer " + this.getAccessToken());
         } catch (FoundNoAccessTokenException | AccessTokenRequestException | InvalidAccessTokenException | TokenPersistException | InvalidCredentialsException e) {
@@ -97,7 +96,7 @@ public class OAuth2Authenticator implements AuthenticatorInterface {
             List<NameValuePair> parameters = new ArrayList<>();
             parameters.add(new BasicNameValuePair("grant_type", "client_credentials"));
 
-            if (this.scopes != null && this.scopes.size() > 0) {
+            if (this.scopes != null && !this.scopes.isEmpty()) {
                 parameters.add(new BasicNameValuePair("scope", String.join(",", this.scopes)));
             }
 
@@ -154,13 +153,8 @@ public class OAuth2Authenticator implements AuthenticatorInterface {
         return this.getAccessToken(true, EXPIRE_THRESHOLD);
     }
 
-    private AccessToken parseTokenResponse(HttpResponse response) throws InvalidAccessTokenException, TokenPersistException, AccessTokenRequestException {
+    private AccessToken parseTokenResponse(String body) throws TokenPersistException, AccessTokenRequestException {
         try {
-            if (response.getStatusLine().getStatusCode() != 200) {
-                throw new InvalidAccessTokenException("Could not obtain access token");
-            }
-
-            String body = EntityUtils.toString(response.getEntity());
             AccessToken token = (new ObjectMapper()).readValue(body, AccessToken.class);
 
             if (this.tokenStore != null) {
@@ -177,9 +171,9 @@ public class OAuth2Authenticator implements AuthenticatorInterface {
         return (new HttpClientFactory(AuthenticatorFactory.factory(credentials))).factory();
     }
 
-    private AccessToken request(CredentialsInterface credentials, HttpPost request) throws InvalidCredentialsException, IOException, InvalidAccessTokenException, TokenPersistException, AccessTokenRequestException {
+    private AccessToken request(CredentialsInterface credentials, HttpPost request) throws InvalidCredentialsException, IOException, TokenPersistException, AccessTokenRequestException {
         CloseableHttpClient httpClient = this.newHttpClient(credentials);
-        HttpResponse response = httpClient.execute(request);
+        String response = httpClient.execute(request, new BasicHttpClientResponseHandler());
 
         AccessToken token = this.parseTokenResponse(response);
 

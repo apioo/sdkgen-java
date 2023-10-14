@@ -2,7 +2,7 @@
 package app.sdkgen.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.client.HttpClient;
+import org.apache.hc.client5.http.classic.HttpClient;
 
 public abstract class TagAbstract {
     protected HttpClient httpClient;

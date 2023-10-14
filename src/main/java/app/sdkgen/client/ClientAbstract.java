@@ -5,7 +5,7 @@ import app.sdkgen.client.Credentials.Anonymous;
 import app.sdkgen.client.Exception.Authenticator.InvalidCredentialsException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.client.HttpClient;
+import org.apache.hc.client5.http.classic.HttpClient;
 
 public abstract class ClientAbstract {
     public static final String USER_AGENT = "SDKgen Client v1.0";

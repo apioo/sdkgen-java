@@ -3,7 +3,7 @@ package app.sdkgen.client;
 import app.sdkgen.client.Exception.ParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,6 +48,11 @@ public class Parser {
 
             builder.addParameter(key, this.toString(value));
         });
+    }
+
+    public HttpReturn handle(int code, String payload)
+    {
+        return new HttpReturn(code, payload);
     }
 
     private String substituteParameters(String path, Map<String, Object> parameters) {
@@ -104,5 +109,15 @@ public class Parser {
             baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
         }
         return baseUrl;
+    }
+
+    static public class HttpReturn {
+        public final int code;
+        public final String payload;
+
+        private HttpReturn(final int code, final String payload) {
+            this.code = code;
+            this.payload = payload;
+        }
     }
 }
