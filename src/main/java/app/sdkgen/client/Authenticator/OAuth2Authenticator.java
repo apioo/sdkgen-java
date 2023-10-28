@@ -140,7 +140,7 @@ public class OAuth2Authenticator implements AuthenticatorInterface {
         long timestamp = System.currentTimeMillis() / 1000;
 
         AccessToken accessToken = this.tokenStore.get();
-        if (accessToken == null || accessToken.getExpiresIn() < timestamp) {
+        if (accessToken == null || accessToken.getExpiresInTimestamp() < timestamp) {
             accessToken = this.fetchAccessTokenByClientCredentials();
         }
 
@@ -148,7 +148,7 @@ public class OAuth2Authenticator implements AuthenticatorInterface {
             throw new FoundNoAccessTokenException("Found no access token, please obtain an access token before making a request");
         }
 
-        if (accessToken.getExpiresIn() > (timestamp + expireThreshold)) {
+        if (accessToken.getExpiresInTimestamp() > (timestamp + expireThreshold)) {
             return accessToken.getAccessToken();
         }
 

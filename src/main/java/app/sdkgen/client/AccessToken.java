@@ -51,4 +51,18 @@ public class AccessToken {
     public boolean hasRefreshToken() {
         return this.refreshToken != null && !this.refreshToken.isEmpty();
     }
+
+    public long getExpiresInTimestamp()
+    {
+        long nowTimestamp = System.currentTimeMillis() / 1000;
+
+        long expiresIn = this.getExpiresIn();
+        if (expiresIn < 529196400) {
+            // in case the expires in is lower than 1986-10-09 we assume that the field represents the duration in seconds
+            // otherwise it is probably a timestamp
+            expiresIn = nowTimestamp + expiresIn;
+        }
+
+        return expiresIn;
+    }
 }
