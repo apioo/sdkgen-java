@@ -11,9 +11,9 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import java.time.LocalDateTime;
 
 public class App {
-    private int id;
-    private int userId;
-    private int status;
+    private Integer id;
+    private Integer userId;
+    private Integer status;
     private String name;
     private String url;
     private String parameters;
@@ -26,7 +26,7 @@ public class App {
         this.id = id;
     }
     @JsonGetter("id")
-    public int getId() {
+    public Integer getId() {
         return this.id;
     }
     @JsonSetter("userId")
@@ -34,7 +34,7 @@ public class App {
         this.userId = userId;
     }
     @JsonGetter("userId")
-    public int getUserId() {
+    public Integer getUserId() {
         return this.userId;
     }
     @JsonSetter("status")
@@ -42,7 +42,7 @@ public class App {
         this.status = status;
     }
     @JsonGetter("status")
-    public int getStatus() {
+    public Integer getStatus() {
         return this.status;
     }
     @JsonSetter("name")

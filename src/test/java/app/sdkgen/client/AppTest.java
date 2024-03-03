@@ -28,9 +28,9 @@ public class AppTest {
         ObjectMapper objectMapper = (new ObjectMapper()).findAndRegisterModules();
         App app = objectMapper.readValue(json, App.class);
 
-        Assert.assertEquals(2, app.getId());
-        Assert.assertEquals(1, app.getUserId());
-        Assert.assertEquals(1, app.getStatus());
+        Assert.assertEquals(2, app.getId().intValue());
+        Assert.assertEquals(1, app.getUserId().intValue());
+        Assert.assertEquals(1, app.getStatus().intValue());
         Assert.assertEquals("Consumer", app.getName());
         Assert.assertEquals("9b15b481-6449-4dd2-866a-a0c1a4fa5bad", app.getAppKey());
         Assert.assertEquals(LocalDateTime.parse("2022-08-27T00:00:48Z", DateTimeFormatter.ISO_DATE_TIME), app.getDate());

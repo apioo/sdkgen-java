@@ -129,7 +129,7 @@ public class IntegrationTest {
 
         TestRequest payload = new TestRequest();
         payload.setInt(1337);
-        payload.setFloat((float) 13.37);
+        payload.setFloat(13.37);
         payload.setString("foobar");
         payload.setBool(true);
         payload.setArrayScalar(arrayScalar);

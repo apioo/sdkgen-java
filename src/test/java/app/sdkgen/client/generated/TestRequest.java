@@ -8,29 +8,29 @@ package app.sdkgen.client.generated;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 public class TestRequest {
-    private int _int;
-    private double _float;
+    private Integer _int;
+    private Double _float;
     private String string;
-    private boolean bool;
+    private Boolean bool;
     private String[] arrayScalar;
     private TestObject[] arrayObject;
     private TestMapScalar mapScalar;
     private TestMapObject mapObject;
     private TestObject object;
     @JsonSetter("int")
-    public void setInt(int _int) {
+    public void setInt(Integer _int) {
         this._int = _int;
     }
     @JsonGetter("int")
-    public int getInt() {
+    public Integer getInt() {
         return this._int;
     }
     @JsonSetter("float")
-    public void setFloat(double _float) {
+    public void setFloat(Double _float) {
         this._float = _float;
     }
     @JsonGetter("float")
-    public double getFloat() {
+    public Double getFloat() {
         return this._float;
     }
     @JsonSetter("string")
@@ -42,11 +42,11 @@ public class TestRequest {
         return this.string;
     }
     @JsonSetter("bool")
-    public void setBool(boolean bool) {
+    public void setBool(Boolean bool) {
         this.bool = bool;
     }
     @JsonGetter("bool")
-    public boolean getBool() {
+    public Boolean getBool() {
         return this.bool;
     }
     @JsonSetter("arrayScalar")
