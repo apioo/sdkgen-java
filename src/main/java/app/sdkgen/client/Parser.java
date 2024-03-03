@@ -61,10 +61,10 @@ public class Parser {
             }
 
             if (structNames.contains(name)) {
-                Map<String, Object> nestedValues = this.objectMapper.convertValue(value, Map.class);
-                for (Map.Entry<String, Object> entry : nestedValues.entrySet()) {
-                    builder.addParameter(entry.getKey(), this.toString(entry.getValue()));
-                }
+                Map<String, Object> properties = this.objectMapper.convertValue(value, Map.class);
+                properties.forEach((nestedName, nestedValue) -> {
+                    builder.addParameter(nestedName, this.toString(nestedValue));
+                });
             } else {
                 builder.addParameter(name, this.toString(value));
             }
