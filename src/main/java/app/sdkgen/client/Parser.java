@@ -12,6 +12,7 @@ package app.sdkgen.client;
 
 import app.sdkgen.client.Exception.ParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.core5.net.URIBuilder;
 
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,12 +53,23 @@ public class Parser {
     }
 
     public void query(URIBuilder builder, Map<String, Object> parameters) {
-        parameters.forEach((key, value) -> {
+        this.query(builder, parameters, new ArrayList<>());
+    }
+
+    public void query(URIBuilder builder, Map<String, Object> parameters, List<String> structNames) {
+        parameters.forEach((name, value) -> {
             if (value == null) {
                 return;
             }
 
-            builder.addParameter(key, this.toString(value));
+            if (structNames.contains(name)) {
+                Map<String, Object> nestedValues = this.objectMapper.convertValue(value, Map.class);
+                for (Map.Entry<String, Object> entry : nestedValues.entrySet()) {
+                    builder.addParameter(entry.getKey(), this.toString(entry.getValue()));
+                }
+            } else {
+                builder.addParameter(name, this.toString(value));
+            }
         });
     }
 
