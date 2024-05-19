@@ -12,6 +12,7 @@ package app.sdkgen.client;
 
 import app.sdkgen.client.Exception.ParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.core5.net.URIBuilder;
 
@@ -50,6 +51,14 @@ public class Parser {
         }
     }
 
+    public <T> T parse(String data, TypeReference<T> value) throws ParseException {
+        try {
+            return this.objectMapper.readValue(data, value);
+        } catch (JsonProcessingException e) {
+            throw new ParseException("The provided JSON data is invalid: " + e.getMessage(), e);
+        }
+    }
+
     public void query(URIBuilder builder, Map<String, Object> parameters) {
         this.query(builder, parameters, new ArrayList<>());
     }
@@ -61,15 +70,15 @@ public class Parser {
             }
 
             if (structNames.contains(name)) {
-                this.query(builder, this.objectMapper.convertValue(value, Map.class));
+                this.query(builder, this.objectMapper.convertValue(value, new TypeReference<>() {
+                }));
             } else {
                 builder.addParameter(name, this.toString(value));
             }
         });
     }
 
-    public HttpReturn handle(int code, String payload)
-    {
+    public HttpReturn handle(int code, String payload) {
         return new HttpReturn(code, payload);
     }
 
