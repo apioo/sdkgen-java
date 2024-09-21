@@ -14,8 +14,11 @@ import app.sdkgen.client.Exception.ParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.net.URIBuilder;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -78,8 +81,8 @@ public class Parser {
         });
     }
 
-    public HttpReturn handle(int code, String payload) {
-        return new HttpReturn(code, payload);
+    public HttpReturn handle(int code, HttpEntity entity) {
+        return new HttpReturn(code, entity);
     }
 
     private String substituteParameters(String path, Map<String, Object> parameters) {
@@ -139,12 +142,32 @@ public class Parser {
     }
 
     static public class HttpReturn {
-        public final int code;
-        public final String payload;
+        private final int code;
+        private final HttpEntity entity;
 
-        private HttpReturn(final int code, final String payload) {
+        private HttpReturn(final int code, final HttpEntity entity) {
             this.code = code;
-            this.payload = payload;
+            this.entity = entity;
+        }
+
+        public boolean isSuccessful() {
+            return this.code >= 200 && this.code <= 299;
+        }
+
+        public int getCode() {
+            return this.code;
+        }
+
+        public String getContent() throws IOException, ParseException {
+            try {
+                return EntityUtils.toString(this.entity);
+            } catch (org.apache.hc.core5.http.ParseException e) {
+                throw new ParseException(e.getMessage(), e);
+            }
+        }
+
+        public byte[] getByteArray() throws IOException {
+            return EntityUtils.toByteArray(this.entity);
         }
     }
 }
