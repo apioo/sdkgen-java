@@ -7,6 +7,5 @@ package app.sdkgen.client.generated;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.HashMap;
-public class TestMapObject extends HashMap<String, TestObject> {
+public class TestMapObject extends java.util.HashMap<String, TestObject> {
 }
