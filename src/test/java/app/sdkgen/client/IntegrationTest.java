@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class IntegrationTest {
@@ -147,6 +148,22 @@ public class IntegrationTest {
         Assert.assertEquals("SDKgen Client v1.0", response.getHeaders().get("User-Agent"));
         Assert.assertEquals("POST", response.getMethod());
         Assert.assertEquals("bar", response.getForm().get("foo"));
+    }
+
+    @Test
+    public void testClientJson() throws ClientException {
+        Client client = Client.build("my_token");
+
+        var payload = new HashMap<String, String>();
+        payload.put("string", "bar");
+
+        TestResponse response = client.product().json(payload);
+
+        Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
+        Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
+        Assert.assertEquals("SDKgen Client v1.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("POST", response.getMethod());
+        Assert.assertEquals("bar", response.getJson().getString());
     }
 
     @Test
