@@ -81,10 +81,6 @@ public class Parser {
         });
     }
 
-    public HttpReturn handle(int code, HttpEntity entity) {
-        return new HttpReturn(code, entity);
-    }
-
     private String substituteParameters(String path, Map<String, Object> parameters) {
         String[] parts = path.split("/");
         List<String> result = new ArrayList<>();
@@ -139,35 +135,5 @@ public class Parser {
             baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
         }
         return baseUrl;
-    }
-
-    static public class HttpReturn {
-        private final int code;
-        private final HttpEntity entity;
-
-        private HttpReturn(final int code, final HttpEntity entity) {
-            this.code = code;
-            this.entity = entity;
-        }
-
-        public boolean isSuccessful() {
-            return this.code >= 200 && this.code <= 299;
-        }
-
-        public int getCode() {
-            return this.code;
-        }
-
-        public String getContent() throws IOException, ParseException {
-            try {
-                return EntityUtils.toString(this.entity);
-            } catch (org.apache.hc.core5.http.ParseException e) {
-                throw new ParseException(e.getMessage(), e);
-            }
-        }
-
-        public byte[] getByteArray() throws IOException {
-            return EntityUtils.toByteArray(this.entity);
-        }
     }
 }
