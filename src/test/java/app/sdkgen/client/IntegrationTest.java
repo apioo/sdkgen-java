@@ -13,7 +13,12 @@ package app.sdkgen.client;
 import app.sdkgen.client.Exception.ClientException;
 import app.sdkgen.client.generated.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
@@ -21,13 +26,20 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IntegrationTest {
     private ObjectMapper objectMapper;
 
     @Before
     public void setUp() {
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = (new ObjectMapper())
+                .findAndRegisterModules()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         Assume.assumeTrue(portIsOpen());
     }
@@ -106,6 +118,80 @@ public class IntegrationTest {
         Assert.assertEquals(0, response.getArgs().size());
     }
 
+    @Test
+    public void testClientBinary() throws ClientException {
+        Client client = Client.build("my_token");
+
+        byte[] payload = {0x66, 0x6F, 0x6F, 0x62, 0x61, 0x72};
+
+        TestResponse response = client.product().binary(payload);
+
+        Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
+        Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
+        Assert.assertEquals("SDKgen Client v1.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("POST", response.getMethod());
+        Assert.assertEquals("foobar", response.getData());
+    }
+
+    @Test
+    public void testClientForm() throws ClientException {
+        Client client = Client.build("my_token");
+
+        List<NameValuePair> payload = new ArrayList<>();
+        payload.add(new BasicNameValuePair("foo", "bar"));
+
+        TestResponse response = client.product().form(payload);
+
+        Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
+        Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
+        Assert.assertEquals("SDKgen Client v1.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("POST", response.getMethod());
+        Assert.assertEquals("bar", response.getForm().get("foo"));
+    }
+
+    @Test
+    public void testClientMultipart() throws ClientException {
+        Client client = Client.build("my_token");
+
+        byte[] body = {0x66, 0x6F, 0x6F, 0x62, 0x61, 0x72};
+        MultipartEntityBuilder payload = MultipartEntityBuilder.create();
+        payload.addBinaryBody("foo", body, ContentType.TEXT_PLAIN, "upload.txt");
+
+        TestResponse response = client.product().multipart(payload);
+
+        Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
+        Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
+        Assert.assertEquals("SDKgen Client v1.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("POST", response.getMethod());
+        Assert.assertEquals("foobar", response.getFiles().get("foo"));
+    }
+
+    @Test
+    public void testClientText() throws ClientException {
+        Client client = Client.build("my_token");
+
+        TestResponse response = client.product().text("foobar");
+
+        Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
+        Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
+        Assert.assertEquals("SDKgen Client v1.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("POST", response.getMethod());
+        Assert.assertEquals("foobar", response.getData());
+    }
+
+    @Test
+    public void testClientXml() throws ClientException {
+        Client client = Client.build("my_token");
+
+        TestResponse response = client.product().xml("<foo>bar</foo>");
+
+        Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
+        Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
+        Assert.assertEquals("SDKgen Client v1.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("POST", response.getMethod());
+        Assert.assertEquals("<foo>bar</foo>", response.getData());
+    }
+
     public TestRequest newPayload() {
 
         TestObject objectFoo = new TestObject();
@@ -124,14 +210,21 @@ public class IntegrationTest {
         mapObject.put("foo", objectFoo);
         mapObject.put("bar", objectBar);
 
-        String[] arrayScalar = {"foo", "bar"};
-        TestObject[] arrayObject = {objectFoo, objectBar};
+        List<String> arrayScalar = new ArrayList<>();
+        arrayScalar.add("foo");
+        arrayScalar.add("bar");
+        List<TestObject> arrayObject = new ArrayList<>();
+        arrayObject.add(objectFoo);
+        arrayObject.add(objectBar);
 
         TestRequest payload = new TestRequest();
         payload.setInt(1337);
         payload.setFloat(13.37);
         payload.setString("foobar");
         payload.setBool(true);
+        payload.setDateString(LocalDate.of(2024, 9, 22));
+        payload.setDateTimeString(LocalDateTime.of(2024, 9, 22, 10, 9, 0));
+        payload.setTimeString(LocalTime.of(10, 9, 0));
         payload.setArrayScalar(arrayScalar);
         payload.setArrayObject(arrayObject);
         payload.setMapScalar(mapScalar);
