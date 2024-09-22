@@ -10,7 +10,9 @@
 
 package app.sdkgen.client.Exception;
 
-public class ClientException extends Exception {
+import java.io.IOException;
+
+public class ClientException extends IOException {
     public ClientException(String message) {
         super(message);
     }
