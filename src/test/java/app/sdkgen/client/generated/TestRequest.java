@@ -7,7 +7,7 @@ package app.sdkgen.client.generated;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-public class TestRequest<TestObject> {
+public class TestRequest {
     private Integer _int;
     private Double _float;
     private String string;
