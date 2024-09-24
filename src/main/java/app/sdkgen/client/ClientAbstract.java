@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.classic.HttpClient;
 
 public abstract class ClientAbstract {
-    public static final String USER_AGENT = "SDKgen Client v1.0";
+    public static final String USER_AGENT = "SDKgen Client v2.0";
 
     protected AuthenticatorInterface authenticator;
     protected HttpClient httpClient;
