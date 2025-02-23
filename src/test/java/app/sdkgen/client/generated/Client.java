@@ -30,8 +30,12 @@ import java.util.List;
 import java.util.Map;
 
 public class Client extends ClientAbstract {
+    public Client(String baseUrl, CredentialsInterface credentials, String version) throws InvalidCredentialsException {
+        super(baseUrl, credentials, version);
+    }
+
     public Client(String baseUrl, CredentialsInterface credentials) throws InvalidCredentialsException {
-        super(baseUrl, credentials);
+        this(baseUrl, credentials, null);
     }
 
     public ProductTag product()
@@ -47,7 +51,7 @@ public class Client extends ClientAbstract {
 
     public static Client build(String token) throws InvalidCredentialsException
     {
-        return new Client("http://127.0.0.1:8081", new HttpBearer(token));
+        return new Client("http://127.0.0.1:8081", new HttpBearer(token), "0.1.0");
     }
 
     public static Client buildAnonymous() throws InvalidCredentialsException

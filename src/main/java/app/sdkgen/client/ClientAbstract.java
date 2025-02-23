@@ -17,20 +17,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.classic.HttpClient;
 
 public abstract class ClientAbstract {
-    public static final String USER_AGENT = "SDKgen Client v2.0";
+    public static final String USER_AGENT = "SDKgen";
 
     protected AuthenticatorInterface authenticator;
     protected HttpClient httpClient;
     protected ObjectMapper objectMapper;
     protected Parser parser;
 
-    public ClientAbstract(String baseUrl, CredentialsInterface credentials) throws InvalidCredentialsException {
+    public ClientAbstract(String baseUrl, CredentialsInterface credentials, String version) throws InvalidCredentialsException {
         this.authenticator = AuthenticatorFactory.factory(credentials);
-        this.httpClient = (new HttpClientFactory(this.authenticator)).factory();
+        this.httpClient = (new HttpClientFactory(this.authenticator, version)).factory();
         this.objectMapper = (new ObjectMapper())
             .findAndRegisterModules()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.parser = new Parser(baseUrl, this.objectMapper);
+    }
+
+    public ClientAbstract(String baseUrl, CredentialsInterface credentials) throws InvalidCredentialsException {
+        this(baseUrl, credentials, null);
     }
 
     public ClientAbstract(String baseUrl) throws InvalidCredentialsException {
