@@ -53,7 +53,7 @@ public class IntegrationTest {
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
-        Assert.assertEquals("SDKgen Client v2.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("SDKgen/0.1.0", response.getHeaders().get("User-Agent"));
         Assert.assertEquals("GET", response.getMethod());
         Assert.assertEquals("8", response.getArgs().get("startIndex"));
         Assert.assertEquals("16", response.getArgs().get("count"));
@@ -70,7 +70,7 @@ public class IntegrationTest {
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
-        Assert.assertEquals("SDKgen Client v2.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("SDKgen/0.1.0", response.getHeaders().get("User-Agent"));
         Assert.assertEquals("POST", response.getMethod());
         Assert.assertEquals(0, response.getArgs().size());
         Assert.assertEquals(this.objectMapper.writeValueAsString(payload), this.objectMapper.writeValueAsString(response.getJson()));
@@ -85,7 +85,7 @@ public class IntegrationTest {
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
-        Assert.assertEquals("SDKgen Client v2.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("SDKgen/0.1.0", response.getHeaders().get("User-Agent"));
         Assert.assertEquals("PUT", response.getMethod());
         Assert.assertEquals(0, response.getArgs().size());
         Assert.assertEquals(this.objectMapper.writeValueAsString(payload), this.objectMapper.writeValueAsString(response.getJson()));
@@ -100,7 +100,7 @@ public class IntegrationTest {
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
-        Assert.assertEquals("SDKgen Client v2.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("SDKgen/0.1.0", response.getHeaders().get("User-Agent"));
         Assert.assertEquals("PATCH", response.getMethod());
         Assert.assertEquals(0, response.getArgs().size());
         Assert.assertEquals(this.objectMapper.writeValueAsString(payload), this.objectMapper.writeValueAsString(response.getJson()));
@@ -114,7 +114,7 @@ public class IntegrationTest {
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
-        Assert.assertEquals("SDKgen Client v2.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("SDKgen/0.1.0", response.getHeaders().get("User-Agent"));
         Assert.assertEquals("DELETE", response.getMethod());
         Assert.assertEquals(0, response.getArgs().size());
     }
@@ -129,7 +129,7 @@ public class IntegrationTest {
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
-        Assert.assertEquals("SDKgen Client v2.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("SDKgen/0.1.0", response.getHeaders().get("User-Agent"));
         Assert.assertEquals("POST", response.getMethod());
         Assert.assertEquals("foobar", response.getData());
     }
@@ -145,7 +145,7 @@ public class IntegrationTest {
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
-        Assert.assertEquals("SDKgen Client v2.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("SDKgen/0.1.0", response.getHeaders().get("User-Agent"));
         Assert.assertEquals("POST", response.getMethod());
         Assert.assertEquals("bar", response.getForm().get("foo"));
     }
@@ -161,7 +161,7 @@ public class IntegrationTest {
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
-        Assert.assertEquals("SDKgen Client v2.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("SDKgen/0.1.0", response.getHeaders().get("User-Agent"));
         Assert.assertEquals("POST", response.getMethod());
         Assert.assertEquals("bar", response.getJson().getString());
     }
@@ -178,7 +178,7 @@ public class IntegrationTest {
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
-        Assert.assertEquals("SDKgen Client v2.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("SDKgen/0.1.0", response.getHeaders().get("User-Agent"));
         Assert.assertEquals("POST", response.getMethod());
         Assert.assertEquals("foobar", response.getFiles().get("foo"));
     }
@@ -191,7 +191,7 @@ public class IntegrationTest {
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
-        Assert.assertEquals("SDKgen Client v2.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("SDKgen/0.1.0", response.getHeaders().get("User-Agent"));
         Assert.assertEquals("POST", response.getMethod());
         Assert.assertEquals("foobar", response.getData());
     }
@@ -204,7 +204,7 @@ public class IntegrationTest {
 
         Assert.assertEquals("Bearer my_token", response.getHeaders().get("Authorization"));
         Assert.assertEquals("application/json", response.getHeaders().get("Accept"));
-        Assert.assertEquals("SDKgen Client v2.0", response.getHeaders().get("User-Agent"));
+        Assert.assertEquals("SDKgen/0.1.0", response.getHeaders().get("User-Agent"));
         Assert.assertEquals("POST", response.getMethod());
         Assert.assertEquals("<foo>bar</foo>", response.getData());
     }
